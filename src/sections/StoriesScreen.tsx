@@ -5,6 +5,53 @@ import { ArrowLeft, Volume2, Sparkles, BookOpen, Languages, Link, ArrowRight, Se
 import { stories } from '@/data/storiesData';
 import { transliterate } from '@/lib/transliterate';
 
+const splitIntoChunks = (text: string, maxLen = 150): string[] => {
+  // Split by sentence endings first, preserving the punctuation
+  const regex = /([^.!?]+[.!?]*)/g;
+  const matches = text.match(regex) || [text];
+  
+  const chunks: string[] = [];
+  let currentChunk = "";
+  
+  for (const match of matches) {
+    const trimmed = match.trim();
+    if (!trimmed) continue;
+    
+    if (currentChunk && (currentChunk.length + trimmed.length + 1 > maxLen)) {
+      chunks.push(currentChunk);
+      currentChunk = trimmed;
+    } else {
+      currentChunk = currentChunk ? `${currentChunk} ${trimmed}` : trimmed;
+    }
+  }
+  if (currentChunk) {
+    chunks.push(currentChunk);
+  }
+  
+  const finalChunks: string[] = [];
+  for (const chunk of chunks) {
+    if (chunk.length <= maxLen) {
+      finalChunks.push(chunk);
+    } else {
+      const words = chunk.split(/\s+/);
+      let subChunk = "";
+      for (const word of words) {
+        if (subChunk && (subChunk.length + word.length + 1 > maxLen)) {
+          finalChunks.push(subChunk);
+          subChunk = word;
+        } else {
+          subChunk = subChunk ? `${subChunk} ${word}` : word;
+        }
+      }
+      if (subChunk) {
+        finalChunks.push(subChunk);
+      }
+    }
+  }
+  
+  return finalChunks;
+};
+
 export default function StoriesScreen() {
   const { setScreen, settings, setSettingsOpen, t } = useGameStore();
   const [selectedStoryId, setSelectedStoryId] = useState<string>(stories[0].id);
@@ -14,12 +61,18 @@ export default function StoriesScreen() {
   const [customTransliterated, setCustomTransliterated] = useState<string>('');
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const playQueueRef = useRef<string[]>([]);
+  const currentQueueIndexRef = useRef<number>(0);
 
   // Stop audio on unmount
   useEffect(() => {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
+        audioRef.current.onended = null;
+      }
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
       }
     };
   }, []);
@@ -27,28 +80,73 @@ export default function StoriesScreen() {
   const activeStory = stories.find((s) => s.id === selectedStoryId) || stories[0];
 
   const playAudio = (text: string) => {
+    // Cancel any active SpeechSynthesis
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    
+    // Stop and clear any active Audio elements
     if (audioRef.current) {
       audioRef.current.pause();
+      audioRef.current.onended = null;
+      audioRef.current = null;
     }
 
     const cleanText = text.trim();
     if (!cleanText) return;
 
-    const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ru&client=tw-ob&q=${encodeURIComponent(cleanText)}`;
-    const audio = new Audio(ttsUrl);
-    audio.volume = settings.voiceVolume / 100;
-    audioRef.current = audio;
+    // Split text into chunks safe for Google TTS (max 150 characters)
+    const chunks = splitIntoChunks(cleanText, 150);
+    if (chunks.length === 0) return;
 
-    audio.play().catch((err) => {
-      console.warn('Google TTS failed, using Web Speech Synthesis fallback', err);
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        utterance.lang = 'ru-RU';
-        utterance.rate = 0.8;
-        window.speechSynthesis.speak(utterance);
+    playQueueRef.current = chunks;
+    currentQueueIndexRef.current = 0;
+
+    const playNext = () => {
+      const index = currentQueueIndexRef.current;
+      if (index >= playQueueRef.current.length) {
+        // Queue finished
+        return;
       }
-    });
+
+      const chunk = playQueueRef.current[index];
+      const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ru&client=tw-ob&q=${encodeURIComponent(chunk)}`;
+      
+      const audio = new Audio();
+      audio.referrerPolicy = "no-referrer";
+      audio.src = ttsUrl;
+      audio.volume = settings.voiceVolume / 100;
+      audioRef.current = audio;
+
+      audio.onended = () => {
+        currentQueueIndexRef.current += 1;
+        playNext();
+      };
+
+      audio.play().catch((err) => {
+        console.warn('Google TTS chunk failed, using Web Speech Synthesis fallback', err);
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(chunk);
+          utterance.lang = 'ru-RU';
+          utterance.rate = 0.8;
+          utterance.onend = () => {
+            currentQueueIndexRef.current += 1;
+            playNext();
+          };
+          utterance.onerror = () => {
+            currentQueueIndexRef.current += 1;
+            playNext();
+          };
+          window.speechSynthesis.speak(utterance);
+        } else {
+          // If no speechSynthesis, just move to next
+          currentQueueIndexRef.current += 1;
+          playNext();
+        }
+      });
+    };
+
+    playNext();
   };
 
   const handleCustomTextChange = (text: string) => {
