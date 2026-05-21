@@ -288,33 +288,33 @@ export default function DictionaryScreen() {
           {filteredWords.map((entry, idx) => (
             <div 
               key={idx}
-              className="group bg-card border border-border/70 rounded-xl p-4 flex items-center justify-between hover:border-primary/50 transition-colors shadow-sm"
+              className="group bg-card border border-border/70 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 hover:border-primary/50 transition-colors shadow-sm"
             >
-              <div className="flex items-center gap-4 flex-1">
+              <div className="flex items-center gap-4 flex-1 min-w-0">
                 <button
                   onClick={() => playAudio(entry.ru)}
-                  className="p-3 rounded-xl bg-background hover:bg-primary/15 text-muted-foreground hover:text-primary transition-all border border-border/50 shadow-xs"
+                  className="p-3 rounded-xl bg-background hover:bg-primary/15 text-muted-foreground hover:text-primary transition-all border border-border/50 shadow-xs shrink-0"
                   title="Escuchar audio"
                 >
                   <Volume2 className="w-5 h-5" />
                 </button>
                 
-                <div className="space-y-0.5">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-xl font-bold text-foreground tracking-wide font-cyrillic">
+                <div className="space-y-0.5 min-w-0">
+                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                    <span className="text-xl font-bold text-foreground tracking-wide font-cyrillic break-all">
                       {entry.ru}
                     </span>
-                    <span className="text-xs font-semibold text-secondary/90 italic font-mono">
+                    <span className="text-xs font-semibold text-secondary/90 italic font-mono break-all">
                       [{entry.lat}]
                     </span>
                   </div>
-                  <p className="text-sm font-medium text-muted-foreground leading-relaxed">
+                  <p className="text-sm font-medium text-muted-foreground leading-relaxed break-words">
                     {entry.es}
                   </p>
                 </div>
               </div>
               
-              <div className="shrink-0 flex items-center">
+              <div className="shrink-0 flex items-center pl-[60px] sm:pl-0">
                 <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-muted text-muted-foreground border border-border/20">
                   {t(`dictionary.cat.${entry.cat}`)}
                 </span>
