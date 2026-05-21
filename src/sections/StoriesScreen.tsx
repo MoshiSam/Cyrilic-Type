@@ -84,13 +84,6 @@ export default function StoriesScreen() {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
-    
-    // Stop and clear any active Audio elements
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.onended = null;
-      audioRef.current = null;
-    }
 
     const cleanText = text.trim();
     if (!cleanText) return;
@@ -102,28 +95,42 @@ export default function StoriesScreen() {
     playQueueRef.current = chunks;
     currentQueueIndexRef.current = 0;
 
+    // Initialize or reuse a single Audio element
+    let audio = audioRef.current;
+    if (!audio) {
+      audio = new Audio();
+      (audio as any).referrerPolicy = "no-referrer";
+      audioRef.current = audio;
+    } else {
+      audio.pause();
+      audio.onended = null;
+    }
+
+    const activeAudio = audio;
+    activeAudio.volume = settings.voiceVolume / 100;
+
     const playNext = () => {
       const index = currentQueueIndexRef.current;
       if (index >= playQueueRef.current.length) {
         // Queue finished
+        if (audioRef.current) {
+          audioRef.current.onended = null;
+        }
         return;
       }
 
       const chunk = playQueueRef.current[index];
       const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ru&client=tw-ob&q=${encodeURIComponent(chunk)}`;
       
-      const audio = new Audio();
-      (audio as any).referrerPolicy = "no-referrer";
-      audio.src = ttsUrl;
-      audio.volume = settings.voiceVolume / 100;
-      audioRef.current = audio;
+      // Update src on the existing element
+      activeAudio.src = ttsUrl;
 
-      audio.onended = () => {
+      activeAudio.onended = () => {
         currentQueueIndexRef.current += 1;
         playNext();
       };
 
-      audio.play().catch((err) => {
+      activeAudio.play().catch((err) => {
         console.warn('Google TTS chunk failed, using Web Speech Synthesis fallback', err);
         if ('speechSynthesis' in window) {
           const utterance = new SpeechSynthesisUtterance(chunk);
