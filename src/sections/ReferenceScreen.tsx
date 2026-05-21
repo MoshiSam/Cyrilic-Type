@@ -38,7 +38,7 @@ export default function ReferenceScreen() {
     if (!url) return;
 
     const audio = new Audio();
-    audio.referrerPolicy = "no-referrer";
+    (audio as any).referrerPolicy = "no-referrer";
     audio.src = url;
     audio.volume = settings.voiceVolume / 100;
     audioRef.current = audio;
@@ -50,7 +50,7 @@ export default function ReferenceScreen() {
         console.log('Falling back to Google TTS for letter pronunciation');
         const fallbackUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ru&client=tw-ob&q=${encodeURIComponent(cleanText)}`;
         const fallbackAudio = new Audio();
-        fallbackAudio.referrerPolicy = "no-referrer";
+        (fallbackAudio as any).referrerPolicy = "no-referrer";
         fallbackAudio.src = fallbackUrl;
         fallbackAudio.volume = settings.voiceVolume / 100;
         audioRef.current = fallbackAudio;

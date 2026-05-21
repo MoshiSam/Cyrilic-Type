@@ -40,7 +40,7 @@ export default function DictionaryScreen() {
 
     const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ru&client=tw-ob&q=${encodeURIComponent(cleanText)}`;
     const audio = new Audio();
-    audio.referrerPolicy = "no-referrer";
+    (audio as any).referrerPolicy = "no-referrer";
     audio.src = ttsUrl;
     audio.volume = settings.voiceVolume / 100;
     audioRef.current = audio;
