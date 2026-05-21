@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+<p align="center">
+  <img src="logo.png" alt="Cyrilic Type Logo" width="120" height="120" style="border-radius: 24px; float: right; margin-left: 20px;" />
+</p>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Cyrilic Type
 
-Currently, two official plugins are available:
+Una aplicación web interactiva diseñada para aprender, practicar y memorizar el abecedario cirílico ruso de forma dinámica, visual y auditiva.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Si quieres jugar y practicar directamente en tu navegador, la versión web en vivo está disponible aquí:  
+👉 **[Despliegue en Vivo en GitHub Pages](https://MoshiSam.github.io/Cyrilic-Type/)** *(Asegúrate de configurar tu rama y enlace en las opciones de tu repositorio)*
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Características Principales
 
-## Expanding the ESLint configuration
+* 📖 **Dictados Interactivos (Quiz)**: Escribe la transcripción al alfabeto latino de cada carácter cirílico. Cuenta con atajos de teclado (`Ctrl + Espacio` para reproducir sonido, `Enter` para verificar/continuar rápido).
+* 🔊 **Audios Humanos Nativos**: Pronunciación real en ruso grabada por hablantes nativos obtenida desde Wikimedia Commons con fallback automático a síntesis de voz (Google TTS y Web Speech API offline).
+* 📚 **Sala de Lectura con Cuentos Infantiles**: Lee cuentos tradicionales rusos como *Masha y el Oso*. Incluye transliterador instantáneo para pasar cualquier fragmento cirílico a caracteres latinos y escuchar fragmentos individuales.
+* 📕 **Diccionario Ruso Offline**: Más de 500 palabras rusas comunes organizadas por categorías de uso cotidiano, buscador reactivo inteligente y traductor online de respaldo integrado.
+* 🎨 **Temas Personalizados**: Interfaz estética premium con soporte para múltiples paletas de colores (`Oscuro`, `Claro premium`, `Flor de Cerezo / Sakura`, `Bosque / Forest`).
+* 🍪 **Persistencia de Preferencias**: Tus estadísticas de juego, volumen de audio y temas se guardan de forma local en tu navegador mediante cookies y LocalStorage (sin requerir base de datos externa).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## ⚡ Inicio Rápido (Desarrollo Local)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Asegúrate de tener instalado **[Node.js](https://nodejs.org/)** (versión 20 o superior recomendado).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. **Instalar dependencias**:
+   ```bash
+   npm install
+   ```
+
+2. **Iniciar servidor de desarrollo**:
+   ```bash
+   npm run dev
+   ```
+   *Esto iniciará la aplicación localmente en http://localhost:3000.*
+
+---
+
+## 📦 Compilación y Producción
+
+Para compilar el código de producción optimizado para la web:
+
+```bash
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+La build generada se creará en la carpeta `dist/`. Gracias al archivo de configuración de Vite, las rutas son relativas (`./`), lo que hace que los archivos de la carpeta `dist/` se puedan alojar directamente en cualquier servicio estático como GitHub Pages.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🤝 Agradecimientos e Inspiración
+
+* **[Kenney.nl](https://kenney.nl)** y **Wikimedia Commons** por la obtención y almacenamiento libre de recursos de audio nativos en ruso.
+* **Type Kana** y **Real Kana** por la excelente inspiración de diseño e idea interactiva de práctica rápida.
