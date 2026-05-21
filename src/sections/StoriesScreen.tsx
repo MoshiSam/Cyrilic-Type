@@ -341,7 +341,7 @@ export default function StoriesScreen() {
               </h3>
               <div className="space-y-2 pt-2">
                 <a
-                  href="https://russiancrafts.com/russian-folk-tales"
+                  href="https://www.russianforfree.com/texts.php"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between p-2 rounded-lg bg-background hover:bg-muted border border-border/50 text-xs font-medium text-foreground hover:text-primary transition-all group"
@@ -350,12 +350,12 @@ export default function StoriesScreen() {
                   <ArrowRight className="w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-1 text-primary" />
                 </a>
                 <a
-                  href="https://www.loyalbooks.com/language/Russian"
+                  href={settings.language === 'es' ? 'https://anylang.net/es/books/ru' : 'https://anylang.net/en/books/ru'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between p-2 rounded-lg bg-background hover:bg-muted border border-border/50 text-xs font-medium text-foreground hover:text-primary transition-all group"
                 >
-                  <span className="truncate pr-2">Audiobooks infantiles en ruso</span>
+                  <span className="truncate pr-2">{t('stories.extLink2')}</span>
                   <ArrowRight className="w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-1 text-primary" />
                 </a>
               </div>

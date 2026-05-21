@@ -84,8 +84,8 @@ export const translations = {
     'stories.customDesc': 'Pega cualquier texto en cirílico ruso para trasliterarlo inmediatamente:',
     'stories.customPlaceholder': 'Pega el texto aquí...',
     'stories.externalLinks': 'Sitios recomendados de cuentos cortos:',
-    'stories.extLink1': 'Cuentos Infantiles en Ruso (Russian Crafts)',
-    'stories.extLink2': 'Fábulas de Esopo en Ruso',
+    'stories.extLink1': 'Textos Bilingües (Russian for Free)',
+    'stories.extLink2': 'Libros bilingües interactivos (AnyLang)',
 
     // Dictionary
     'dictionary.title': 'Diccionario Ruso-Español',
@@ -187,8 +187,8 @@ export const translations = {
     'stories.customDesc': 'Paste any text in Russian Cyrillic to transliterate it immediately:',
     'stories.customPlaceholder': 'Paste text here...',
     'stories.externalLinks': 'Recommended websites for short stories:',
-    'stories.extLink1': 'Children\'s Stories in Russian (Russian Crafts)',
-    'stories.extLink2': 'Aesop\'s Fables in Russian',
+    'stories.extLink1': 'Bilingual Texts (Russian for Free)',
+    'stories.extLink2': 'Interactive bilingual books (AnyLang)',
 
     // Dictionary
     'dictionary.title': 'Russian-Spanish Dictionary',
